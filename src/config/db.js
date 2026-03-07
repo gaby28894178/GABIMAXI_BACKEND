@@ -2,6 +2,8 @@ import mysql from "mysql2/promise"
 import pg from "pg"
 import dotenv from "dotenv"
 
+// Cargar variables de entorno (prioridad: .env.local de Vercel > .env normal)
+dotenv.config({ path: '.env.local' })
 dotenv.config()
 
 let pool
