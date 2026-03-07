@@ -99,17 +99,9 @@ Defines the endpoints and maps them to Controllers.
 
 ---
 
-## 🛠 How to Run
+## 🌍 Deployment & Documentation
 
-1. **Install Dependencies:**
-   ```bash
-   npm install
-   ```
-2. **Start Server:**
-   ```bash
-   npm start
-   ```
-3. **Run in Dev Mode:**
-   ```bash
-   npm run dev
-   ```
+For details on the deployed version (Vercel) and how to use the API in production, please refer to:
+
+- **[DEPLOY.md](./DEPLOY.md)**: Contains the live URL, endpoint details, and environment configuration for cloud databases.
+- **[postman_collection_vercel.json](./postman_collection_vercel.json)**: A ready-to-use Postman collection configured with the Vercel production URL. Import this file into Postman to test the live API immediately.
