@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 
-const JWT_SECRET = process.env.JWT_SECRET || "default_secret"
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey"
 
 export const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"]
@@ -12,6 +12,7 @@ export const authenticateToken = (req, res, next) => {
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
+      console.error("JWT Verification Error:", err.message);
       return res.status(403).json({ message: "Invalid or expired token" })
     }
     req.user = user
