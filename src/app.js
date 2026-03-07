@@ -3,6 +3,7 @@ import morgan from "morgan"
 import cors from "cors"
 import authRoutes from "./routes/auth.routes.js"
 import userRoutes from "./routes/user.routes.js"
+import installRoutes from "./routes/install.routes.js"
 
 const app = express()
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: false }))
 // Routes
 app.use("/api/auth", authRoutes)
 app.use("/api/users", userRoutes)
+app.use("/api/install", installRoutes)
 
 // Default route
 app.get("/", (req, res) => {
