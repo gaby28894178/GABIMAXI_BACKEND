@@ -1,3 +1,4 @@
+/*
 import { pool } from "../config/db.js"
 
 export const userModel = {
@@ -22,3 +23,4 @@ export const userModel = {
     await pool.query("UPDATE sec_users SET pswd = $1 WHERE login = $2", [newHash, login]);
   }
 }
+*/

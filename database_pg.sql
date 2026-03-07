@@ -1,3 +1,4 @@
+/*
 -- Script para crear la tabla en PostgreSQL (para Vercel Postgres / Neon / Railway)
 
 CREATE TABLE IF NOT EXISTS sec_users (
@@ -36,3 +37,4 @@ EXECUTE PROCEDURE update_modified_column();
 INSERT INTO sec_users (login, pswd, name, email, active) 
 VALUES ('test_cloud', '$2a$10$x.z5q.Z5q.Z5q.Z5q.Z5qe.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q', 'Usuario Test Cloud', 'test@cloud.com', 'Y')
 ON CONFLICT (login) DO NOTHING;
+*/
