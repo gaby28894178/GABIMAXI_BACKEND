@@ -3,19 +3,19 @@
 Este backend está desplegado en Vercel y es accesible públicamente.
 
 ## URL Base
-**`https://gabimaxi-backend.vercel.app/`**
+**`https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/`**
 
 ## Endpoints Disponibles
 
 ### 1. Verificar Estado
-- **URL**: `https://gabimaxi-backend.vercel.app/`
+- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/`
 - **Método**: `GET`
 - **Respuesta**: `{"message": "Welcome to Maxipela Turnos API"}`
 
 ### 2. Autenticación
 
 #### Registro de Usuario
-- **URL**: `https://gabimaxi-backend.vercel.app/api/auth/register`
+- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/auth/register`
 - **Método**: `POST`
 - **Body (JSON)**:
   ```json
@@ -28,7 +28,7 @@ Este backend está desplegado en Vercel y es accesible públicamente.
   ```
 
 #### Login
-- **URL**: `https://gabimaxi-backend.vercel.app/api/auth/login`
+- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/auth/login`
 - **Método**: `POST`
 - **Body (JSON)**:
   ```json
@@ -42,7 +42,7 @@ Este backend está desplegado en Vercel y es accesible públicamente.
 ### 3. Usuarios (Rutas Protegidas)
 
 #### Obtener Perfil del Usuario Logueado
-- **URL**: `https://gabimaxi-backend.vercel.app/api/users/me`
+- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/users/me`
 - **Método**: `GET`
 - **Headers**:
   - `Authorization`: `Bearer <TU_TOKEN_AQUI>`
@@ -50,18 +50,20 @@ Este backend está desplegado en Vercel y es accesible públicamente.
 
 ## Notas Importantes sobre la Base de Datos
 
-Actualmente, el backend en Vercel está configurado para conectarse a una base de datos **MySQL externa**. 
+Actualmente, el backend en Vercel está configurado para conectarse a una base de datos **PostgreSQL (Vercel Postgres)**.
 
-**Si obtienes errores de conexión (500 Internal Server Error)**, asegúrate de haber configurado las siguientes Variables de Entorno en el panel de Vercel (Settings -> Environment Variables):
+**Si obtienes errores de conexión (500 Internal Server Error)**, asegúrate de haber creado una base de datos Postgres en tu proyecto de Vercel y que las variables de entorno se hayan generado automáticamente:
 
-- `DB_HOST`: La dirección de tu base de datos en la nube (ej. aws.connect.psdb.cloud).
-- `DB_USER`: Tu usuario de base de datos.
-- `DB_PASSWORD`: Tu contraseña de base de datos.
-- `DB_NAME`: `maxipela_turnos`
-- `DB_PORT`: El puerto (generalmente 3306).
+- `POSTGRES_URL`
+- `POSTGRES_USER`
+- `POSTGRES_HOST`
+- `POSTGRES_PASSWORD`
+- `POSTGRES_DATABASE`
+
+Adicionalmente, asegúrate de configurar:
 - `JWT_SECRET`: Tu clave secreta para los tokens.
 
-> **Nota**: Vercel NO puede conectarse a tu base de datos local (`localhost`). Debes usar un proveedor de base de datos en la nube (como PlanetScale, Aiven, Railway, o Clever Cloud).
+> **Nota**: El código detecta automáticamente estas variables y se conecta a Postgres cuando está en Vercel.
 
 ## Colección de Postman
-Se ha incluido un archivo `postman_collection_vercel.json` en este repositorio. Puedes importarlo directamente en Postman para probar todas las rutas configuradas con la URL de producción.
+Se ha incluido un archivo `postman_collection_vercel.json` en este repositorio. Puedes importarlo directamente en Postman para probar todas las rutas configuradas con la URL de producción actualizada.

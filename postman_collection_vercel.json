@@ -25,10 +25,10 @@
 							"raw": "{\n    \"login\": \"gabriel_vercel\",\n    \"pswd\": \"123456\",\n    \"name\": \"Gabriel Vercel\",\n    \"email\": \"gabriel.vercel@test.com\"\n}"
 						},
 						"url": {
-							"raw": "https://gabimaxi-backend.vercel.app/api/auth/register",
+							"raw": "https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/auth/register",
 							"protocol": "https",
 							"host": [
-								"gabimaxi-backend",
+								"gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36",
 								"vercel",
 								"app"
 							],
@@ -72,10 +72,10 @@
 							"raw": "{\n    \"login\": \"gabriel_vercel\",\n    \"pswd\": \"123456\"\n}"
 						},
 						"url": {
-							"raw": "https://gabimaxi-backend.vercel.app/api/auth/login",
+							"raw": "https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/auth/login",
 							"protocol": "https",
 							"host": [
-								"gabimaxi-backend",
+								"gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36",
 								"vercel",
 								"app"
 							],
@@ -109,10 +109,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://gabimaxi-backend.vercel.app/api/users/me",
+							"raw": "https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/users/me",
 							"protocol": "https",
 							"host": [
-								"gabimaxi-backend",
+								"gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36",
 								"vercel",
 								"app"
 							],
@@ -136,10 +136,10 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://gabimaxi-backend.vercel.app/",
+							"raw": "https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/",
 							"protocol": "https",
 							"host": [
-								"gabimaxi-backend",
+								"gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36",
 								"vercel",
 								"app"
 							],
