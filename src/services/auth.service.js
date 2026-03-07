@@ -6,7 +6,13 @@ import crypto from 'crypto' // Para soportar contraseñas antiguas MD5
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey_change_this_in_production'
 
 export const register = async (userData) => {
-  const { login, pswd, name, email } = userData
+  // Aceptamos 'password' o 'pswd' del frontend
+  const { login, name, email } = userData
+  const rawPassword = userData.password || userData.pswd
+
+  if (!rawPassword) {
+    throw new Error('La contraseña es requerida')
+  }
 
   // Verificar si el usuario ya existe
   const existingUser = await User.findByPk(login)
@@ -16,9 +22,9 @@ export const register = async (userData) => {
 
   // Hash de la contraseña con bcrypt (seguridad moderna)
   const salt = await bcrypt.genSalt(10)
-  const hashedPassword = await bcrypt.hash(pswd, salt)
+  const hashedPassword = await bcrypt.hash(rawPassword, salt)
 
-  // Crear usuario con Sequelize (evita SQL Injection automáticamente)
+  // Crear usuario con Sequelize
   const newUser = await User.create({
     login,
     pswd: hashedPassword,
@@ -35,44 +41,50 @@ export const register = async (userData) => {
 }
 
 export const login = async (login, password) => {
+  console.log(`[Auth] Intentando login para usuario: ${login}`)
+  
   const user = await User.findByPk(login)
   
   if (!user) {
+    console.log(`[Auth] Usuario ${login} no encontrado`)
     throw new Error('Credenciales inválidas')
   }
+
+  console.log(`[Auth] Usuario encontrado. Verificando contraseña...`)
 
   let isPasswordValid = false
   let needsMigration = false
 
-  // Detectar tipo de contraseña (bcrypt empieza con $2...)
+  // Detectar tipo de contraseña
   if (user.pswd.startsWith('$2')) {
+    // Bcrypt
     isPasswordValid = await bcrypt.compare(password, user.pswd)
   } else {
-    // Soporte para contraseñas antiguas (Legacy PHP - MD5)
-    // Asumimos MD5 simple
+    // Legacy MD5
     const md5Hash = crypto.createHash('md5').update(password).digest('hex')
     
-    if (md5Hash === user.pswd) {
+    // Comparamos lowercase para asegurar compatibilidad
+    if (md5Hash.toLowerCase() === user.pswd.toLowerCase()) {
       isPasswordValid = true
-      needsMigration = true // Marcar para migrar a bcrypt
+      needsMigration = true
     } else if (password === user.pswd) {
-      // Soporte para texto plano (muy inseguro, pero posible legacy)
+      // Texto plano
       isPasswordValid = true
       needsMigration = true
     }
   }
 
   if (!isPasswordValid) {
+    console.log(`[Auth] Contraseña inválida para ${login}`)
     throw new Error('Credenciales inválidas')
   }
 
-  // Auto-migración a Bcrypt si era contraseña vieja
+  // Auto-migración a Bcrypt
   if (needsMigration) {
     console.log(`[Seguridad] Migrando contraseña de usuario ${login} a Bcrypt...`)
     const salt = await bcrypt.genSalt(10)
     const newHash = await bcrypt.hash(password, salt)
     
-    // Actualizar en base de datos
     user.pswd = newHash
     await user.save()
   }
@@ -82,7 +94,7 @@ export const login = async (login, password) => {
     { 
       login: user.login, 
       email: user.email,
-      role: user.tipo_usuario_id // Incluir rol en el token si es útil
+      role: user.tipo_usuario_id 
     },
     JWT_SECRET,
     { expiresIn: '24h' }
