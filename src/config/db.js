@@ -18,14 +18,30 @@ if (hasPostgresConfig) {
   const { Pool } = pg
   const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL
   
-  console.log("Using PostgreSQL Database (Cloud / Vercel)")
+  // Detectar si es localhost para desactivar SSL
+  const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1')
   
-  pool = new Pool({
-    connectionString,
-    ssl: {
+  if (isVercelEnvironment && isLocal) {
+    console.error("❌ ERROR FATAL: Estás intentando conectar a 'localhost' desde Vercel.")
+    console.error("❌ Vercel no puede acceder a tu base de datos local.")
+    console.error("❌ Usa una base de datos en la nube (Vercel Postgres, Neon, Supabase, etc.).")
+    throw new Error("Invalid DB Configuration: Cannot use localhost in Vercel. Use a Cloud Database.")
+  }
+
+  console.log(`Using PostgreSQL Database (${isLocal ? 'Local' : 'Cloud / Vercel'})`)
+  
+  const poolConfig = {
+    connectionString
+  }
+
+  // Solo habilitamos SSL si NO es local (para producción/nube)
+  if (!isLocal) {
+    poolConfig.ssl = {
       rejectUnauthorized: false
     }
-  })
+  }
+  
+  pool = new Pool(poolConfig)
 
   // Adaptador para que Postgres se comporte parecido a MySQL en las consultas simples
   pool.getConnection = async () => {
