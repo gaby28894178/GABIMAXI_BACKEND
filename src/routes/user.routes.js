@@ -8,6 +8,7 @@ const router = Router()
 router.use(verifyToken)
 
 router.get('/profile', userController.getProfile)
+router.get('/me', userController.getProfile) // Alias para /profile
 router.put('/profile', userController.updateProfile)
 
 export default router

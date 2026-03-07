@@ -97,7 +97,7 @@ export const login = async (login, password) => {
       role: user.tipo_usuario_id 
     },
     JWT_SECRET,
-    { expiresIn: '24h' }
+    { expiresIn: '15m' }
   )
 
   const userJson = user.toJSON()
