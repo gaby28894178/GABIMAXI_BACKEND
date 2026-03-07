@@ -1,4 +1,4 @@
-import { userModel } from "../models/user.model.js"
+import User from "../models/user.model.js"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import crypto from "crypto" // Built-in module for MD5
@@ -6,22 +6,24 @@ import crypto from "crypto" // Built-in module for MD5
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey"
 
 export const register = async (userData) => {
-  const existingUser = await userModel.findUserByLogin(userData.login)
+  const existingUser = await User.findByPk(userData.login)
   if (existingUser) {
     throw new Error("User already exists")
   }
 
   const hashedPassword = await bcrypt.hash(userData.pswd, 10)
-  const newUser = await userModel.createUser({
+  const newUser = await User.create({
     ...userData,
     pswd: hashedPassword,
+    // active: 'Y' (default in model)
+    // f_insert: NOW (default in model)
   })
 
-  return newUser
+  return newUser.toJSON()
 }
 
 export const login = async (login, password) => {
-  const user = await userModel.findUserByLogin(login)
+  const user = await User.findByPk(login)
   if (!user) {
     throw new Error("Invalid credentials")
   }
@@ -34,7 +36,6 @@ export const login = async (login, password) => {
     isPasswordValid = await bcrypt.compare(password, user.pswd)
   } else {
     // Fallback for Legacy Passwords (e.g., MD5 from PHP)
-    // Assuming PHP used md5($pass)
     const md5Hash = crypto.createHash('md5').update(password).digest('hex')
     
     if (md5Hash === user.pswd) {
@@ -55,12 +56,10 @@ export const login = async (login, password) => {
   if (needsMigration) {
       console.log(`Migrating password for user ${user.login} to bcrypt...`);
       const newHash = await bcrypt.hash(password, 10);
-      // We need a method to update the password directly. 
-      // Since we don't have a specific updatePassword method exposed yet, 
-      // we might need to add it to user.model or use a raw query here?
-      // For now, let's assume we can ignore the update or add a TODO.
-      // Better: Add updatePassword to user.model quickly.
-      await userModel.updatePassword(user.login, newHash);
+      
+      // Update password using Sequelize instance method or static update
+      user.pswd = newHash;
+      await user.save();
   }
 
   const token = jwt.sign(
@@ -69,6 +68,7 @@ export const login = async (login, password) => {
     { expiresIn: "1h" }
   )
 
-  const { pswd, ...userWithoutPassword } = user
+  const userJson = user.toJSON()
+  const { pswd, ...userWithoutPassword } = userJson
   return { user: userWithoutPassword, token }
 }

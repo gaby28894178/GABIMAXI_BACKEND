@@ -1,13 +1,11 @@
-import mysql from "mysql2/promise"
-import pg from "pg"
+import { Sequelize } from "sequelize"
 import dotenv from "dotenv"
 
 // Cargar variables de entorno (prioridad: .env.local de Vercel > .env normal)
 dotenv.config({ path: '.env.local' })
 dotenv.config()
 
-let pool
-let isPostgres = false
+let sequelize
 let isMissingDB = false
 
 // Detectar si estamos en Vercel (o si hay URL de Postgres definida)
@@ -16,8 +14,6 @@ const hasPostgresConfig = process.env.POSTGRES_URL || process.env.DATABASE_URL
 const isVercelEnvironment = process.env.VERCEL === '1'
 
 if (hasPostgresConfig) {
-  // Configuración para PostgreSQL (Nube / Vercel)
-  const { Pool } = pg
   const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL
   
   // Detectar si es localhost para desactivar SSL
@@ -30,56 +26,38 @@ if (hasPostgresConfig) {
     throw new Error("Invalid DB Configuration: Cannot use localhost in Vercel. Use a Cloud Database.")
   }
 
-  console.log(`Using PostgreSQL Database (${isLocal ? 'Local' : 'Cloud / Vercel'})`)
+  console.log(`Using PostgreSQL Database (${isLocal ? 'Local' : 'Cloud / Vercel'}) with Sequelize`)
   
-  const poolConfig = {
-    connectionString
-  }
-
+  const dialectOptions = {}
+  
   // Solo habilitamos SSL si NO es local (para producción/nube)
   if (!isLocal) {
-    poolConfig.ssl = {
+    dialectOptions.ssl = {
+      require: true,
       rejectUnauthorized: false
     }
   }
-  
-  pool = new Pool(poolConfig)
 
-  // Adaptador para que Postgres se comporte parecido a MySQL en las consultas simples
-  pool.getConnection = async () => {
-    const client = await pool.connect()
-    return client
-  }
-  
-  isPostgres = true
+  sequelize = new Sequelize(connectionString, {
+    dialect: 'postgres',
+    logging: false, // Set to console.log to see SQL queries
+    dialectOptions
+  })
 
 } else {
   // Si estamos en Vercel pero NO hay configuración de Postgres, esto es un error crítico.
-  // No podemos conectar a localhost desde Vercel.
   if (isVercelEnvironment) {
     console.error("❌ ERROR CRÍTICO: Despliegue en Vercel detectado pero SIN configuración de base de datos.")
     console.error("❌ Por favor, ve a la pestaña 'Storage' en tu proyecto de Vercel y crea una base de datos Postgres.")
-    // No lanzamos error para que la app no crashee, pero marcamos el estado
     isMissingDB = true
-    pool = null
+    sequelize = null
   } else {
-    // Configuración para MySQL (Local)
-    // Usamos esto porque en tu PC local tienes MySQL en el puerto 4343
-    console.log("Using MySQL Database (Local - Fallback)")
-    
-    pool = mysql.createPool({
-      host: process.env.DB_HOST || "localhost",
-      user: process.env.DB_USER || "root",
-      password: process.env.DB_PASSWORD || "",
-      database: process.env.DB_NAME || "maxipela_turnos",
-      port: process.env.DB_PORT || 4343, // Puerto local de tu MySQL
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0
-    })
-    
-    isPostgres = false
+    // Fallback local (si no hay variable POSTGRES_URL)
+    // Asumimos que quieres usar Postgres localmente si no hay config
+    console.log("⚠️ No POSTGRES_URL found. Please configure your .env file.")
+    isMissingDB = true
+    sequelize = null
   }
 }
 
-export { pool, isPostgres, isMissingDB }
+export { sequelize, isMissingDB }

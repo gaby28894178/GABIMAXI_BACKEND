@@ -1,64 +1,39 @@
-import { pool, isPostgres } from '../config/db.js';
+import User from '../models/user.model.js';
+import { sequelize } from '../config/db.js';
 
 export const installDatabase = async (req, res) => {
   try {
-    if (!pool) {
+    if (!sequelize) {
       return res.status(500).json({
         message: 'Database connection not established. Please check your configuration.'
       });
     }
 
-    if (!isPostgres) {
-      return res.status(400).json({ 
-        message: 'This installer is only for PostgreSQL environments (Vercel/Cloud).' 
-      });
-    }
+    // Force sync: drops table if exists and creates new one
+    // Or alter: true to update schema
+    // Let's use alter to be safe, or force if they want a fresh start?
+    // User said "borra todos los modelos... solo q quede uno echo con postgre".
+    // Maybe they want a fresh DB too? "instala zequeliser... borra modelos".
+    // I will use sync({ alter: true }) to not lose data, unless they explicitly asked to drop.
+    // But for "install", usually it implies setting up.
+    
+    await User.sync({ alter: true });
 
-    const sqlScript = `
-      CREATE TABLE IF NOT EXISTS sec_users (
-          login VARCHAR(100) NOT NULL PRIMARY KEY,
-          pswd VARCHAR(255) NOT NULL,
-          name VARCHAR(255),
-          email VARCHAR(255),
-          active CHAR(1) DEFAULT 'Y',
-          institucion_id INT,
-          tipo_usuario_id INT,
-          profesional_id INT,
-          paciente_id INT,
-          f_insert TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          f_update TIMESTAMP,
-          twofa_enabled BOOLEAN DEFAULT FALSE
-      );
-
-      CREATE OR REPLACE FUNCTION update_modified_column()
-      RETURNS TRIGGER AS $$
-      BEGIN
-          NEW.f_update = now();
-          RETURN NEW;
-      END;
-      $$ language 'plpgsql';
-
-      DROP TRIGGER IF EXISTS update_sec_users_modtime ON sec_users;
-
-      CREATE TRIGGER update_sec_users_modtime
-      BEFORE UPDATE ON sec_users
-      FOR EACH ROW
-      EXECUTE PROCEDURE update_modified_column();
-
-      INSERT INTO sec_users (login, pswd, name, email, active) 
-      VALUES ('test_cloud', '$2a$10$x.z5q.Z5q.Z5q.Z5q.Z5qe.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q', 'Usuario Test Cloud', 'test@cloud.com', 'Y')
-      ON CONFLICT (login) DO NOTHING;
-    `;
-
-    // Split commands by semicolon to execute them one by one if needed, 
-    // but pg library often supports multiple statements in one query.
-    // Let's try executing the whole block.
-    await pool.query(sqlScript);
+    // Create test user if not exists
+    const [user, created] = await User.findOrCreate({
+      where: { login: 'test_cloud' },
+      defaults: {
+        pswd: '$2a$10$x.z5q.Z5q.Z5q.Z5q.Z5qe.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q.Z5q', // hash of '123456' or similar
+        name: 'Usuario Test Cloud',
+        email: 'test@cloud.com',
+        active: 'Y'
+      }
+    });
 
     res.status(200).json({ 
-      message: 'Database tables created successfully!', 
+      message: 'Database tables synchronized successfully!', 
       tables: ['sec_users'],
-      testUser: 'test_cloud'
+      testUser: created ? 'test_cloud (created)' : 'test_cloud (already exists)'
     });
 
   } catch (error) {
