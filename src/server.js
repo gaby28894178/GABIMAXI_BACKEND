@@ -1,29 +1,29 @@
-import app from "./app.js"
-import { sequelize } from "./config/db.js"
-import User from "./models/user.model.js"
+import app from './app.js'
+import { sequelize } from './config/db.js'
+import User from './models/user.model.js' // Importar modelos para asegurar que se registren
 
 const PORT = process.env.PORT || 3000
 
-// Check database connection before starting server
 const startServer = async () => {
   try {
-    if (sequelize) {
-      await sequelize.authenticate()
-      console.log("Database connected successfully via Sequelize")
-      
-      // Sync models (create tables if not exist)
-      // alter: true updates tables if model changes (careful in production)
-      await sequelize.sync({ alter: true })
-      console.log("Database synced successfully")
-    } else {
-      console.warn("⚠️ Running without Database Connection (Check your .env)")
-    }
+    // 1. Conectar a la Base de Datos
+    await sequelize.authenticate()
+    console.log('✅ Conexión a Base de Datos (PostgreSQL) establecida correctamente.')
 
+    // 2. Sincronizar Modelos (Crear tablas si no existen)
+    // alter: true -> actualiza columnas sin borrar datos
+    // force: true -> BORRA todo y recrea (peligroso en prod)
+    await sequelize.sync({ alter: true })
+    console.log('✅ Modelos sincronizados con la base de datos.')
+
+    // 3. Iniciar Servidor Express
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`)
+      console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`)
+      console.log(`📝 Ambiente: ${process.env.NODE_ENV || 'development'}`)
     })
-  } catch (err) {
-    console.error("Database connection failed:", err)
+
+  } catch (error) {
+    console.error('❌ Error al iniciar el servidor:', error)
     process.exit(1)
   }
 }

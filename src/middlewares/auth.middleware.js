@@ -1,21 +1,19 @@
-import jwt from "jsonwebtoken"
+import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey"
+const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey_change_this_in_production'
 
-export const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"]
-  const token = authHeader && authHeader.split(" ")[1]
+export const verifyToken = (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '')
 
   if (!token) {
-    return res.status(401).json({ message: "Access token required" })
+    return res.status(401).json({ message: 'Acceso denegado: Token no proporcionado' })
   }
 
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error("JWT Verification Error:", err.message);
-      return res.status(403).json({ message: "Invalid or expired token" })
-    }
-    req.user = user
+  try {
+    const verified = jwt.verify(token, JWT_SECRET)
+    req.user = verified
     next()
-  })
+  } catch (error) {
+    res.status(401).json({ message: 'Acceso denegado: Token inválido' })
+  }
 }

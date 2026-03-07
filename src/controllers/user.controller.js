@@ -1,11 +1,28 @@
-import * as userService from "../services/user.service.js"
+import * as userService from '../services/user.service.js'
 
-export const getProfile = async (req, res) => {
+export const getProfile = async (req, res, next) => {
   try {
-    // req.user is populated by the auth middleware
+    // req.user viene del middleware de autenticación (verifyToken)
     const user = await userService.getUserProfile(req.user.login)
-    res.json(user)
+    
+    res.json({
+      message: 'Perfil de usuario obtenido',
+      user
+    })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    next(error)
+  }
+}
+
+export const updateProfile = async (req, res, next) => {
+  try {
+    const updatedUser = await userService.updateUserProfile(req.user.login, req.body)
+    
+    res.json({
+      message: 'Perfil actualizado correctamente',
+      user: updatedUser
+    })
+  } catch (error) {
+    next(error)
   }
 }

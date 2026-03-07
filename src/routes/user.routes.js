@@ -1,9 +1,13 @@
-import { Router } from "express"
-import * as userController from "../controllers/user.controller.js"
-import { authenticateToken } from "../middlewares/auth.middleware.js"
+import { Router } from 'express'
+import * as userController from '../controllers/user.controller.js'
+import { verifyToken } from '../middlewares/auth.middleware.js'
 
 const router = Router()
 
-router.get("/me", authenticateToken, userController.getProfile)
+// Todas las rutas de usuario requieren autenticación
+router.use(verifyToken)
+
+router.get('/profile', userController.getProfile)
+router.put('/profile', userController.updateProfile)
 
 export default router

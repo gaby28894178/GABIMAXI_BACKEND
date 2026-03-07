@@ -1,63 +1,34 @@
-import { Sequelize } from "sequelize"
-import dotenv from "dotenv"
+import { Sequelize } from 'sequelize'
+import dotenv from 'dotenv'
 
 // Cargar variables de entorno (prioridad: .env.local de Vercel > .env normal)
 dotenv.config({ path: '.env.local' })
 dotenv.config()
 
-let sequelize
-let isMissingDB = false
+// Obtener la URL de conexión desde .env
+const DATABASE_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL
 
-// Detectar si estamos en Vercel (o si hay URL de Postgres definida)
-const hasPostgresConfig = process.env.POSTGRES_URL || process.env.DATABASE_URL
-// Detectar si estamos en el entorno de Vercel (Vercel define esta variable)
-const isVercelEnvironment = process.env.VERCEL === '1'
-
-if (hasPostgresConfig) {
-  const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL
-  
-  // Detectar si es localhost para desactivar SSL
-  const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1')
-  
-  if (isVercelEnvironment && isLocal) {
-    console.error("❌ ERROR FATAL: Estás intentando conectar a 'localhost' desde Vercel.")
-    console.error("❌ Vercel no puede acceder a tu base de datos local.")
-    console.error("❌ Usa una base de datos en la nube (Vercel Postgres, Neon, Supabase, etc.).")
-    throw new Error("Invalid DB Configuration: Cannot use localhost in Vercel. Use a Cloud Database.")
-  }
-
-  console.log(`Using PostgreSQL Database (${isLocal ? 'Local' : 'Cloud / Vercel'}) with Sequelize`)
-  
-  const dialectOptions = {}
-  
-  // Solo habilitamos SSL si NO es local (para producción/nube)
-  if (!isLocal) {
-    dialectOptions.ssl = {
-      require: true,
-      rejectUnauthorized: false
-    }
-  }
-
-  sequelize = new Sequelize(connectionString, {
-    dialect: 'postgres',
-    logging: false, // Set to console.log to see SQL queries
-    dialectOptions
-  })
-
-} else {
-  // Si estamos en Vercel pero NO hay configuración de Postgres, esto es un error crítico.
-  if (isVercelEnvironment) {
-    console.error("❌ ERROR CRÍTICO: Despliegue en Vercel detectado pero SIN configuración de base de datos.")
-    console.error("❌ Por favor, ve a la pestaña 'Storage' en tu proyecto de Vercel y crea una base de datos Postgres.")
-    isMissingDB = true
-    sequelize = null
-  } else {
-    // Fallback local (si no hay variable POSTGRES_URL)
-    // Asumimos que quieres usar Postgres localmente si no hay config
-    console.log("⚠️ No POSTGRES_URL found. Please configure your .env file.")
-    isMissingDB = true
-    sequelize = null
-  }
+if (!DATABASE_URL) {
+  console.error('❌ ERROR FATAL: No se encontró DATABASE_URL o POSTGRES_URL en el archivo .env')
+  process.exit(1)
 }
 
-export { sequelize, isMissingDB }
+// Configuración de Sequelize
+const sequelize = new Sequelize(DATABASE_URL, {
+  dialect: 'postgres',
+  logging: false, // Desactivar logs de SQL en consola para producción (puedes poner console.log para debug)
+  dialectOptions: {
+    ssl: process.env.NODE_ENV === 'production' ? {
+      require: true,
+      rejectUnauthorized: false // Necesario para algunas nubes como Vercel/Heroku
+    } : false
+  },
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
+})
+
+export { sequelize }

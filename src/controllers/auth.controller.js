@@ -1,20 +1,33 @@
-import * as authService from "../services/auth.service.js"
+import * as authService from '../services/auth.service.js'
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   try {
     const user = await authService.register(req.body)
-    res.status(201).json({ message: "User registered successfully", user })
+    res.status(201).json({
+      message: 'Usuario registrado exitosamente',
+      user
+    })
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    next(error) // Pasar al middleware de errores
   }
 }
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   try {
-    const { login, pswd } = req.body
-    const { user, token } = await authService.login(login, pswd)
-    res.json({ message: "Login successful", user, token })
+    const { login, password } = req.body
+    
+    if (!login || !password) {
+      return res.status(400).json({ message: 'Login y contraseña son requeridos' })
+    }
+
+    const result = await authService.login(login, password)
+    
+    res.json({
+      message: 'Inicio de sesión exitoso',
+      token: result.token,
+      user: result.user
+    })
   } catch (error) {
-    res.status(401).json({ message: error.message })
+    next(error)
   }
 }
