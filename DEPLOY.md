@@ -28,7 +28,7 @@ Si al intentar usar la API recibes errores como `500 Internal Server Error` o en
 Una vez creada la base de datos en Vercel (Paso 1), **no necesitas ejecutar comandos SQL manualmente**.
 
 1. Simplemente abre esta URL en tu navegador:
-   **`https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/install/db`**
+   **`https://gabimaxi-backend.vercel.app/api/install/db`**
 
 2. Si todo sale bien, verás un mensaje JSON confirmando que las tablas se han creado:
    ```json
@@ -46,19 +46,19 @@ Una vez creada la base de datos en Vercel (Paso 1), **no necesitas ejecutar coma
 ---
 
 ## URL Base
-**`https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/`**
+**`https://gabimaxi-backend.vercel.app/`**
 
 ## Endpoints Disponibles
 
 ### 1. Verificar Estado
-- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/`
+- **URL**: `https://gabimaxi-backend.vercel.app/`
 - **Método**: `GET`
 - **Respuesta**: `{"message": "Welcome to Maxipela Turnos API"}`
 
 ### 2. Autenticación
 
 #### Registro de Usuario
-- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/auth/register`
+- **URL**: `https://gabimaxi-backend.vercel.app/api/auth/register`
 - **Método**: `POST`
 - **Body (JSON)**:
   ```json
@@ -71,7 +71,7 @@ Una vez creada la base de datos en Vercel (Paso 1), **no necesitas ejecutar coma
   ```
 
 #### Login
-- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/auth/login`
+- **URL**: `https://gabimaxi-backend.vercel.app/api/auth/login`
 - **Método**: `POST`
 - **Body (JSON)**:
   ```json
@@ -85,7 +85,7 @@ Una vez creada la base de datos en Vercel (Paso 1), **no necesitas ejecutar coma
 ### 3. Usuarios (Rutas Protegidas)
 
 #### Obtener Perfil del Usuario Logueado
-- **URL**: `https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/users/me`
+- **URL**: `https://gabimaxi-backend.vercel.app/api/users/me`
 - **Método**: `GET`
 - **Headers**:
   - `Authorization`: `Bearer <TU_TOKEN_AQUI>`
