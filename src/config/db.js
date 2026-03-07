@@ -6,6 +6,7 @@ dotenv.config()
 
 let pool
 let isPostgres = false
+let isMissingDB = false
 
 // Detectar si estamos en Vercel (o si hay URL de Postgres definida)
 const hasPostgresConfig = process.env.POSTGRES_URL || process.env.DATABASE_URL
@@ -40,25 +41,27 @@ if (hasPostgresConfig) {
   if (isVercelEnvironment) {
     console.error("❌ ERROR CRÍTICO: Despliegue en Vercel detectado pero SIN configuración de base de datos.")
     console.error("❌ Por favor, ve a la pestaña 'Storage' en tu proyecto de Vercel y crea una base de datos Postgres.")
-    throw new Error("Vercel deployment requires a Postgres database configuration. Please create a Postgres database in Vercel Storage tab.")
+    // No lanzamos error para que la app no crashee, pero marcamos el estado
+    isMissingDB = true
+    pool = null
+  } else {
+    // Configuración para MySQL (Local)
+    // Usamos esto porque en tu PC local tienes MySQL en el puerto 4343
+    console.log("Using MySQL Database (Local - Fallback)")
+    
+    pool = mysql.createPool({
+      host: process.env.DB_HOST || "localhost",
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "",
+      database: process.env.DB_NAME || "maxipela_turnos",
+      port: process.env.DB_PORT || 4343, // Puerto local de tu MySQL
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
+    })
+    
+    isPostgres = false
   }
-
-  // Configuración para MySQL (Local)
-  // Usamos esto porque en tu PC local tienes MySQL en el puerto 4343
-  console.log("Using MySQL Database (Local - Fallback)")
-  
-  pool = mysql.createPool({
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME || "maxipela_turnos",
-    port: process.env.DB_PORT || 4343, // Puerto local de tu MySQL
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-  })
-  
-  isPostgres = false
 }
 
-export { pool, isPostgres }
+export { pool, isPostgres, isMissingDB }

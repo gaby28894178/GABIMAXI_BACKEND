@@ -2,6 +2,12 @@ import { pool, isPostgres } from '../config/db.js';
 
 export const installDatabase = async (req, res) => {
   try {
+    if (!pool) {
+      return res.status(500).json({
+        message: 'Database connection not established. Please check your configuration.'
+      });
+    }
+
     if (!isPostgres) {
       return res.status(400).json({ 
         message: 'This installer is only for PostgreSQL environments (Vercel/Cloud).' 

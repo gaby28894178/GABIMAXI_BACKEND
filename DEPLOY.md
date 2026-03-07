@@ -23,16 +23,25 @@ Si al intentar usar la API recibes errores como `500 Internal Server Error` o en
 
 > **Nota**: Esto generará automáticamente las variables de entorno necesarias (`POSTGRES_URL`, etc.) y redesplegará tu proyecto automáticamente (o deberás hacer un nuevo despliegue manual en la pestaña Deployments).
 
-### PASO 2: Crear la Tabla de Usuarios
+### PASO 2: Crear la Tabla de Usuarios (¡NUEVO MÉTODO AUTOMÁTICO!)
 
-Una vez creada la base de datos, necesitas crear la tabla `sec_users`.
+Una vez creada la base de datos en Vercel (Paso 1), **no necesitas ejecutar comandos SQL manualmente**.
 
-1. En la misma pestaña **Storage** de tu proyecto en Vercel, selecciona tu base de datos recién creada (`Postgres`).
-2. Ve a la sección **Query** o **Data** (o un botón que diga "Run Query").
-3. Copia el contenido del archivo **`database_pg.sql`** que está en este repositorio.
-   - Puedes verlo aquí: [database_pg.sql](./database_pg.sql)
-4. Pega el código SQL en la consola de Vercel y ejecútalo.
-5. Esto creará la tabla `sec_users` y un usuario de prueba (`admin`).
+1. Simplemente abre esta URL en tu navegador:
+   **`https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/api/install/db`**
+
+2. Si todo sale bien, verás un mensaje JSON confirmando que las tablas se han creado:
+   ```json
+   {
+     "message": "Database tables created successfully!",
+     "tables": ["sec_users"],
+     "testUser": "test_cloud"
+   }
+   ```
+
+3. ¡Listo! Ya puedes usar la API.
+
+> **Método Manual (Alternativo)**: Si prefieres hacerlo manualmente, copia el contenido de `database_pg.sql` y ejecútalo en la consola de Vercel Storage.
 
 ---
 
