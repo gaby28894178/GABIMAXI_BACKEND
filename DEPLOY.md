@@ -2,6 +2,40 @@
 
 Este backend está desplegado en Vercel y es accesible públicamente.
 
+## ⚠️ GUÍA IMPORTANTE PARA HABILITAR BASE DE DATOS (LEER PRIMERO)
+
+Si al intentar usar la API recibes errores como `500 Internal Server Error` o en los logs ves `Vercel deployment requires a Postgres database configuration`, **es porque falta crear la base de datos en Vercel**.
+
+### PASO 1: Crear la Base de Datos Correcta (NO Edge Config)
+
+1. Ve a tu proyecto en **Vercel** (https://vercel.com).
+2. Haz clic en la pestaña **Storage** (Almacenamiento) en la parte superior.
+3. Haz clic en el botón **Create Database** (Crear Base de Datos).
+4. **IMPORTANTE**: Selecciona **"Postgres"** (el icono azul de elefante o similar).
+   - ❌ NO selecciones "Edge Config".
+   - ❌ NO selecciones "KV".
+   - ❌ NO selecciones "Blob".
+   - ✅ **SELECCIONA "Postgres"**.
+5. Acepta los términos y dale un nombre (ej: `maxipela-db`) y la región (puedes dejar la por defecto o elegir una cercana como `iad1` o `sfo1`).
+6. Haz clic en **Create**.
+7. En la siguiente pantalla, asegúrate de que esté marcado "Connect to Project" y selecciona tu proyecto actual.
+8. Haz clic en **Connect**.
+
+> **Nota**: Esto generará automáticamente las variables de entorno necesarias (`POSTGRES_URL`, etc.) y redesplegará tu proyecto automáticamente (o deberás hacer un nuevo despliegue manual en la pestaña Deployments).
+
+### PASO 2: Crear la Tabla de Usuarios
+
+Una vez creada la base de datos, necesitas crear la tabla `sec_users`.
+
+1. En la misma pestaña **Storage** de tu proyecto en Vercel, selecciona tu base de datos recién creada (`Postgres`).
+2. Ve a la sección **Query** o **Data** (o un botón que diga "Run Query").
+3. Copia el contenido del archivo **`database_pg.sql`** que está en este repositorio.
+   - Puedes verlo aquí: [database_pg.sql](./database_pg.sql)
+4. Pega el código SQL en la consola de Vercel y ejecútalo.
+5. Esto creará la tabla `sec_users` y un usuario de prueba (`admin`).
+
+---
+
 ## URL Base
 **`https://gabimaxi-backend-4qiq-git-gru-311bfd-gabriels-projects-ddae2e36.vercel.app/`**
 

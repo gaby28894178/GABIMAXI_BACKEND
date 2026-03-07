@@ -40,8 +40,7 @@ if (hasPostgresConfig) {
   if (isVercelEnvironment) {
     console.error("❌ ERROR CRÍTICO: Despliegue en Vercel detectado pero SIN configuración de base de datos.")
     console.error("❌ Por favor, ve a la pestaña 'Storage' en tu proyecto de Vercel y crea una base de datos Postgres.")
-    // No lanzamos error aquí para permitir que el servidor arranque y muestre logs, 
-    // pero las consultas fallarán.
+    throw new Error("Vercel deployment requires a Postgres database configuration. Please create a Postgres database in Vercel Storage tab.")
   }
 
   // Configuración para MySQL (Local)
