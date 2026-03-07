@@ -23,25 +23,14 @@ Si al intentar usar la API recibes errores como `500 Internal Server Error` o en
 
 > **Nota**: Esto generará automáticamente las variables de entorno necesarias (`POSTGRES_URL`, etc.) y redesplegará tu proyecto automáticamente (o deberás hacer un nuevo despliegue manual en la pestaña Deployments).
 
-### PASO 2: Crear la Tabla de Usuarios (¡NUEVO MÉTODO AUTOMÁTICO!)
+### PASO 2: Inicialización Automática de la Base de Datos
 
-Una vez creada la base de datos en Vercel (Paso 1), **no necesitas ejecutar comandos SQL manualmente**.
+Una vez creada la base de datos en Vercel (Paso 1), la aplicación creará automáticamente las tablas necesarias la primera vez que se acceda a ella.
 
-1. Simplemente abre esta URL en tu navegador:
-   **`https://gabimaxi-backend.vercel.app/api/install/db`**
+1. Simplemente abre la URL de tu aplicación en el navegador (ej: `https://gabimaxi-backend.vercel.app/`).
+2. Si ves el mensaje `{"message": "API Maxipela Turnos - Online", ...}`, significa que la conexión a la base de datos es correcta y las tablas se han verificado.
 
-2. Si todo sale bien, verás un mensaje JSON confirmando que las tablas se han creado:
-   ```json
-   {
-     "message": "Database tables created successfully!",
-     "tables": ["sec_users"],
-     "testUser": "test_cloud"
-   }
-   ```
-
-3. ¡Listo! Ya puedes usar la API.
-
-> **Método Manual (Alternativo)**: Si prefieres hacerlo manualmente, copia el contenido de `database_pg.sql` y ejecútalo en la consola de Vercel Storage.
+> **Nota**: No es necesario ejecutar scripts SQL manualmente ni acceder a rutas especiales de instalación.
 
 ---
 
