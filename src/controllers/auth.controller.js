@@ -14,7 +14,9 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { login, password } = req.body
+    // Permitir 'password' o 'pswd' (compatibilidad con frontend legacy)
+    const { login } = req.body
+    const password = req.body.password || req.body.pswd
     
     if (!login || !password) {
       return res.status(400).json({ message: 'Login y contraseña son requeridos' })
