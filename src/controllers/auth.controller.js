@@ -15,11 +15,11 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     // Permitir 'password' o 'pswd' (compatibilidad con frontend legacy)
-    const { login } = req.body
+    const login = req.body.login || req.body.email
     const password = req.body.password || req.body.pswd
     
     if (!login || !password) {
-      return res.status(400).json({ message: 'Login y contraseña son requeridos' })
+      return res.status(400).json({ message: 'Email/login y contraseña son requeridos' })
     }
 
     const result = await authService.login(login, password)

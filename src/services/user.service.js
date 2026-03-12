@@ -3,7 +3,9 @@ import User from '../models/user.model.js'
 export const getUserProfile = async (login) => {
   const user = await User.findByPk(login)
   if (!user) {
-    throw new Error('Usuario no encontrado')
+    const err = new Error('Usuario no encontrado')
+    err.statusCode = 404
+    throw err
   }
 
   // Convertir a JSON y eliminar la contraseña
@@ -16,7 +18,9 @@ export const getUserProfile = async (login) => {
 export const updateUserProfile = async (login, updateData) => {
   const user = await User.findByPk(login)
   if (!user) {
-    throw new Error('Usuario no encontrado')
+    const err = new Error('Usuario no encontrado')
+    err.statusCode = 404
+    throw err
   }
 
   // Actualizar solo los campos permitidos

@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretkey_change_this_in_production'
+const JWT_SECRET = process.env.JWT_SECRET || process.env.TOKEN_SECRET || 'supersecretkey_change_this_in_production'
+
+if (!process.env.JWT_SECRET && !process.env.TOKEN_SECRET) {
+  console.warn('⚠️ ADVERTENCIA: JWT_SECRET no configurado, usando valor por defecto (INSEGURO)')
+}
 
 export const verifyToken = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '')

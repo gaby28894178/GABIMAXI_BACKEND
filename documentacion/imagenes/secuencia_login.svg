@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760">
+  <defs>
+    <style>
+      .title{font:700 20px system-ui,Segoe UI,Arial,sans-serif;fill:#111827}
+      .h{font:700 13px system-ui,Segoe UI,Arial,sans-serif;fill:#111827}
+      .t{font:500 12px system-ui,Segoe UI,Arial,sans-serif;fill:#111827}
+      .muted{fill:#6b7280}
+      .box{fill:#ffffff;stroke:#111827;stroke-width:1.5;rx:10;ry:10}
+      .lifeline{stroke:#111827;stroke-width:1.5;stroke-dasharray:6 6}
+      .msg{stroke:#111827;stroke-width:1.5;fill:none}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111827"/>
+    </marker>
+    <marker id="arrowOpen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10" fill="none" stroke="#111827" stroke-width="1.5"/>
+    </marker>
+  </defs>
+
+  <text x="24" y="40" class="title">Diagrama de secuencia: Login</text>
+
+  <rect x="20" y="70" width="1360" height="660" class="box" fill="#f8fafc"/>
+
+  <rect x="80" y="110" width="220" height="54" class="box"/>
+  <text x="190" y="142" text-anchor="middle" class="h">Cliente</text>
+
+  <rect x="360" y="110" width="260" height="54" class="box"/>
+  <text x="490" y="142" text-anchor="middle" class="h">POST /api/auth/login</text>
+
+  <rect x="680" y="110" width="260" height="54" class="box"/>
+  <text x="810" y="142" text-anchor="middle" class="h">auth.service.login</text>
+
+  <rect x="1000" y="110" width="320" height="54" class="box"/>
+  <text x="1160" y="142" text-anchor="middle" class="h">PostgreSQL (sec_users)</text>
+
+  <line x1="190" y1="164" x2="190" y2="690" class="lifeline"/>
+  <line x1="490" y1="164" x2="490" y2="690" class="lifeline"/>
+  <line x1="810" y1="164" x2="810" y2="690" class="lifeline"/>
+  <line x1="1160" y1="164" x2="1160" y2="690" class="lifeline"/>
+
+  <path d="M 190 210 L 490 210" class="msg" marker-end="url(#arrow)"/>
+  <text x="340" y="200" text-anchor="middle" class="t">1) POST login/email + password</text>
+
+  <path d="M 490 250 L 810 250" class="msg" marker-end="url(#arrow)"/>
+  <text x="650" y="240" text-anchor="middle" class="t">2) login(identifier, password)</text>
+
+  <path d="M 810 295 L 1160 295" class="msg" marker-end="url(#arrow)"/>
+  <text x="985" y="285" text-anchor="middle" class="t">3) SELECT por email o PK(login)</text>
+
+  <path d="M 1160 335 L 810 335" class="msg" marker-end="url(#arrowOpen)"/>
+  <text x="985" y="325" text-anchor="middle" class="t muted">4) user | null</text>
+
+  <rect x="660" y="360" width="560" height="140" class="box" fill="#ffffff"/>
+  <text x="680" y="386" class="h">Alternativas</text>
+  <text x="680" y="412" class="t">A) Si no existe usuario → error 404 "Usuario no encontrado"</text>
+  <text x="680" y="436" class="t">B) Si password inválida → error 401 "Contraseña inválida"</text>
+  <text x="680" y="460" class="t">C) Si OK → firma JWT y responde 200</text>
+
+  <path d="M 810 540 L 490 540" class="msg" marker-end="url(#arrow)"/>
+  <text x="650" y="530" text-anchor="middle" class="t">5) {user, token} o error(statusCode)</text>
+
+  <path d="M 490 590 L 190 590" class="msg" marker-end="url(#arrow)"/>
+  <text x="340" y="580" text-anchor="middle" class="t">6) HTTP 200/401/404 (JSON)</text>
+
+  <text x="60" y="715" class="t muted">Nota: el statusCode viene del service y lo respeta el error middleware.</text>
+</svg>

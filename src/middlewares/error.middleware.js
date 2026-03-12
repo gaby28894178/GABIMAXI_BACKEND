@@ -18,8 +18,9 @@ export const errorHandler = (err, req, res, next) => {
   }
 
   // Error genérico del servidor
-  res.status(500).json({ 
-    message: 'Error interno del servidor ario crado',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  const statusCode = err.statusCode || err.status || 500
+  res.status(statusCode).json({
+    message: err.message || 'Error interno del servidor',
+    error: process.env.NODE_ENV === 'development' ? err.stack : undefined
   })
 }

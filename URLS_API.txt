@@ -1,0 +1,16 @@
+URL BASE
+- Local (desarrollo): http://localhost:3000 (o el PORT que tengas configurado)
+- Prefijo API: /api
+
+ENDPOINTS
+- GET / -> estado de la API
+
+AUTH (/api/auth)
+- POST /api/auth/register
+- POST /api/auth/login
+- GET /api/auth/me (requiere Authorization: Bearer <token>)
+
+USUARIOS (/api/users) (todas requieren Authorization: Bearer <token>)
+- GET /api/users/profile
+- GET /api/users/me
+- PUT /api/users/profile

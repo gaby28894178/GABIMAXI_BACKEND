@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="780" viewBox="0 0 1400 780">
+  <defs>
+    <style>
+      .title{font:700 20px system-ui,Segoe UI,Arial,sans-serif;fill:#111827}
+      .h{font:700 13px system-ui,Segoe UI,Arial,sans-serif;fill:#111827}
+      .t{font:500 12px system-ui,Segoe UI,Arial,sans-serif;fill:#111827}
+      .muted{fill:#6b7280}
+      .node{fill:#ffffff;stroke:#111827;stroke-width:1.5;rx:10;ry:10}
+      .node2{fill:#f8fafc;stroke:#111827;stroke-width:1.5;rx:10;ry:10}
+      .line{stroke:#111827;stroke-width:1.5;fill:none}
+      .dash{stroke:#111827;stroke-width:1.5;fill:none;stroke-dasharray:6 5}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111827"/>
+    </marker>
+  </defs>
+
+  <text x="24" y="40" class="title">UML (módulos y dependencias principales)</text>
+
+  <rect x="20" y="70" width="1360" height="690" class="node2"/>
+  <text x="40" y="100" class="h muted">Backend</text>
+
+  <rect x="60" y="130" width="220" height="90" class="node"/>
+  <text x="170" y="160" text-anchor="middle" class="h">src/index.js</text>
+  <text x="170" y="182" text-anchor="middle" class="t muted">arranque + seed demos</text>
+
+  <rect x="320" y="130" width="220" height="90" class="node"/>
+  <text x="430" y="160" text-anchor="middle" class="h">src/app.js</text>
+  <text x="430" y="182" text-anchor="middle" class="t muted">express + rutas + errores</text>
+
+  <rect x="580" y="130" width="240" height="90" class="node"/>
+  <text x="700" y="160" text-anchor="middle" class="h">src/config/db.js</text>
+  <text x="700" y="182" text-anchor="middle" class="t muted">Sequelize + sync</text>
+
+  <rect x="860" y="130" width="240" height="90" class="node"/>
+  <text x="980" y="160" text-anchor="middle" class="h">src/models/user.model.js</text>
+  <text x="980" y="182" text-anchor="middle" class="t muted">tabla sec_users</text>
+
+  <rect x="1140" y="130" width="220" height="90" class="node"/>
+  <text x="1250" y="160" text-anchor="middle" class="h">api/index.js</text>
+  <text x="1250" y="182" text-anchor="middle" class="t muted">handler serverless</text>
+
+  <rect x="240" y="290" width="240" height="110" class="node"/>
+  <text x="360" y="320" text-anchor="middle" class="h">routes/auth.routes.js</text>
+  <text x="360" y="342" text-anchor="middle" class="t muted">/api/auth/*</text>
+  <text x="360" y="364" text-anchor="middle" class="t muted">register, login, me</text>
+
+  <rect x="520" y="290" width="240" height="110" class="node"/>
+  <text x="640" y="320" text-anchor="middle" class="h">routes/user.routes.js</text>
+  <text x="640" y="342" text-anchor="middle" class="t muted">/api/users/*</text>
+  <text x="640" y="364" text-anchor="middle" class="t muted">profile, me, update</text>
+
+  <rect x="800" y="290" width="260" height="110" class="node"/>
+  <text x="930" y="320" text-anchor="middle" class="h">middlewares</text>
+  <text x="930" y="342" text-anchor="middle" class="t muted">auth.middleware.js</text>
+  <text x="930" y="364" text-anchor="middle" class="t muted">error.middleware.js</text>
+
+  <rect x="200" y="450" width="260" height="110" class="node"/>
+  <text x="330" y="480" text-anchor="middle" class="h">controllers/auth.controller.js</text>
+  <text x="330" y="502" text-anchor="middle" class="t muted">HTTP ↔ service</text>
+
+  <rect x="500" y="450" width="260" height="110" class="node"/>
+  <text x="630" y="480" text-anchor="middle" class="h">controllers/user.controller.js</text>
+  <text x="630" y="502" text-anchor="middle" class="t muted">perfil (req.user)</text>
+
+  <rect x="200" y="610" width="260" height="110" class="node"/>
+  <text x="330" y="640" text-anchor="middle" class="h">services/auth.service.js</text>
+  <text x="330" y="662" text-anchor="middle" class="t muted">bcrypt + jwt + login/email</text>
+
+  <rect x="500" y="610" width="260" height="110" class="node"/>
+  <text x="630" y="640" text-anchor="middle" class="h">services/user.service.js</text>
+  <text x="630" y="662" text-anchor="middle" class="t muted">get/update + filtrar pswd</text>
+
+  <line x1="280" y1="175" x2="320" y2="175" class="line" marker-end="url(#arrow)"/>
+  <line x1="540" y1="175" x2="580" y2="175" class="line" marker-end="url(#arrow)"/>
+  <line x1="820" y1="175" x2="860" y2="175" class="line" marker-end="url(#arrow)"/>
+  <line x1="1260" y1="220" x2="980" y2="220" class="dash" marker-end="url(#arrow)"/>
+  <text x="1120" y="214" class="t muted">serverless usa DB</text>
+
+  <line x1="430" y1="220" x2="360" y2="290" class="line" marker-end="url(#arrow)"/>
+  <line x1="430" y1="220" x2="640" y2="290" class="line" marker-end="url(#arrow)"/>
+  <line x1="430" y1="220" x2="930" y2="290" class="line" marker-end="url(#arrow)"/>
+
+  <line x1="360" y1="400" x2="330" y2="450" class="line" marker-end="url(#arrow)"/>
+  <line x1="640" y1="400" x2="630" y2="450" class="line" marker-end="url(#arrow)"/>
+
+  <line x1="330" y1="560" x2="330" y2="610" class="line" marker-end="url(#arrow)"/>
+  <line x1="630" y1="560" x2="630" y2="610" class="line" marker-end="url(#arrow)"/>
+
+  <line x1="460" y1="665" x2="860" y2="175" class="dash" marker-end="url(#arrow)"/>
+  <line x1="760" y1="665" x2="860" y2="175" class="dash" marker-end="url(#arrow)"/>
+  <text x="795" y="615" class="t muted">usan User model</text>
+</svg>

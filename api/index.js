@@ -1,19 +1,37 @@
 import app from '../src/app.js';
-import { sequelize } from '../src/config/db.js';
+import { sequelize, initializeDatabase } from '../src/config/db.js';
+
+// Inicializar DB solo una vez (fuera del handler)
+let dbInitialized = false;
+
+const initDB = async () => {
+  if (!dbInitialized) {
+    try {
+      await initializeDatabase();
+      dbInitialized = true;
+      console.log('✅ Database initialized for serverless');
+    } catch (error) {
+      console.error('❌ Database initialization failed:', error);
+      throw error;
+    }
+  }
+};
+
+// Inicializar en el arranque del módulo
+initDB().catch(console.error);
 
 export default async function handler(req, res) {
   try {
-    // Authenticate with the database
-    await sequelize.authenticate();
+    // Asegurar que la DB esté lista
+    await initDB();
     
-    // Sync models (safe to run, checks if tables exist/need update)
-    // In production with high traffic, use migrations instead.
-    await sequelize.sync({ alter: true });
-    
-    console.log('Database connected and synced.');
+    // Pasar el request a Express usando el handler correcto
+    return app(req, res);
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Handler error:', error);
+    return res.status(500).json({ 
+      message: 'Error interno del servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
-
-  return app(req, res);
 }
